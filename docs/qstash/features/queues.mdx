@@ -1,0 +1,21 @@
+---
+title: '"Queues"'
+---
+The queue concept in QStash allows ordered delivery (FIFO) and also controlled parallelism.
+Here we list common use cases for Queue and how to use them.
+See the [API doc](/qstash/api/queues/upsert) for the full list of related Rest APIs.
+## Ordered Delivery
+With Queues, the ordered delivery is guaranteed by default.
+This means:
+- Your messages will be queued without blocking the REST API and sent one by one in FIFO order. Queued means [CREATED](/qstash/howto/debug-logs) event will be logged.
+- The next message will wait for retries of the current one if it can not be delivered because your endpoint returns non-2xx code.
+  In other words, the next message will be [ACTIVE](/qstash/howto/debug-logs) only after the last message is either [DELIVERED](/qstash/howto/debug-logs) or
+  [FAILED](/qstash/howto/debug-logs).
+- Next message will wait for [callbacks](/qstash/features/callbacks#what-is-a-callback) or [failure callbacks](/qstash/features/callbacks#what-is-a-failure-callback) to finish.
+## Controlled Parallelism
+To ensure that your endpoint is not overwhelmed and also you want more than one-by-one delivery for better throughput,
+you can achieve controlled parallelism with queues.
+By default, queues have parallelism 1.
+Depending on your [plan](https://upstash.com/pricing/qstash), you can configure the parallelism of your queues as follows:
+After that, you can use the `enqueue` path to send your messages.
+You can check the parallelism of your queues with the following API:

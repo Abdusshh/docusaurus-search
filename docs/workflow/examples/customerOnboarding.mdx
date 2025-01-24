@@ -1,0 +1,84 @@
+---
+title: '"Customer Onboarding"'
+---
+This example demonstrates a customer onboarding process using Upstash Workflow. The following example workflow registers a new user, sends welcome emails, and periodically checks and responds to the user's activity state.
+## Use Case
+Our workflow will:
+1. Register a new user to our service
+2. Send them a welcome email
+3. Wait for a certain time
+4. Periodically check the user's state
+5. Send appropriate emails based on the user's activity
+## Code Example
+```typescript api/workflow/route.ts
+import { serve } from "@upstash/workflow/nextjs"
+type InitialData = {
+  email: string
+}
+export const { POST } = serve<InitialData>(async (context) => {
+  const { email } = context.requestPayload
+  await context.run("new-signup", async () => {
+    await sendEmail("Welcome to the platform", email)
+  })
+  await context.sleep("wait-for-3-days", 60 * 60 * 24 * 3)
+  while (true) {
+    const state = await context.run("check-user-state", async () => {
+      return await getUserState()
+    })
+    if (state === "non-active") {
+      await context.run("send-email-non-active", async () => {
+        await sendEmail("Email to non-active users", email)
+      })
+    } else if (state === "active") {
+      await context.run("send-email-active", async () => {
+        await sendEmail("Send newsletter to active users", email)
+      })
+    }
+    await context.sleep("wait-for-1-month", 60 * 60 * 24 * 30)
+  }
+})
+async function sendEmail(message: string, email: string) {
+  // Implement email sending logic here
+  console.log(`Sending ${message} email to ${email}`)
+}
+type UserState = "non-active" | "active"
+const getUserState = async (): Promise<UserState> => {
+  // Implement user state logic here
+  return "non-active"
+}
+```
+## Code Breakdown
+### 1. New User Signup
+We start by sending a newly signed-up user a welcome email:
+```typescript api/workflow/route.ts
+await context.run("new-signup", async () => {
+  await sendEmail("Welcome to the platform", email)
+})
+```
+### 2. Initial Waiting Period
+To leave time for the user to interact with our platform, we use `context.sleep` to pause our workflow for 3 days:
+```typescript api/workflow/route.ts
+await context.sleep("wait-for-3-days", 60 * 60 * 24 * 3)
+```
+### 3. Periodic State Check
+We enter an infinite loop to periodically (every month) check the user's engagement level with our platform and send appropriate emails:
+```typescript api/workflow/route.ts
+while (true) {
+  const state = await context.run("check-user-state", async () => {
+    return await getUserState()
+  })
+  if (state === "non-active") {
+    await context.run("send-email-non-active", async () => {
+      await sendEmail("Email to non-active users", email)
+    })
+  } else if (state === "active") {
+    await context.run("send-email-active", async () => {
+      await sendEmail("Send newsletter to active users", email)
+    })
+  }
+  await context.sleep("wait-for-1-month", 60 * 60 * 24 * 30)
+}
+```
+## Key Features
+1. **Non-blocking sleep**: We use `context.sleep` for pausing the workflow without consuming execution time (great for optimizing serverless cost).
+2. **Long-running task**: This workflow runs indefinitely, checking and responding to a users engagement state every month.

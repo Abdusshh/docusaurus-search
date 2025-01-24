@@ -1,0 +1,56 @@
+---
+title: '"Next.js"'
+---
+QStash is a robust message queue and task-scheduling service that integrates perfectly with Next.js. This guide will show you how to use QStash in your Next.js projects, including a quickstart and a complete example.
+## Quickstart
+At its core, each QStash message contains two pieces of information:
+- URL (which endpoint to call)
+- Request body (e.g. IDs of items you want to process)
+The following endpoint could be used to upload an image and then asynchronously queue a processing task to optimize the image in the background.
+```tsx upload-image/route.ts
+import { Client } from "@upstash/qstash"
+import { NextResponse } from "next/server"
+const client = new Client({ token: process.env.QSTASH_TOKEN! })
+export const POST = async (req: Request) => {
+  // Image uploading logic
+  // 👇 Once uploading is done, queue an image processing task
+  const result = await client.publishJSON({
+    url: "https://your-api-endpoint.com/process-image",
+    body: { imageId: "123" },
+  })
+  return NextResponse.json({
+    message: "Image queued for processing!",
+    qstashMessageId: result.messageId,
+  })
+}
+```
+Note that the URL needs to be publicly available for QStash to call, either as a deployed project or by [developing with QStash locally](/qstash/howto/local-tunnel).
+Because QStash calls our image processing task, we get automatic retries whenever the API throws an error. These retries make our function very reliable. We also let the user know immediately that their image has been successfully queued.
+Now, let's **receive the QStash message** in our image processing endpoint:
+```tsx process-image/route.ts
+import { verifySignatureAppRouter } from "@upstash/qstash/nextjs"
+// 👇 Verify that this messages comes from QStash
+export const POST = verifySignatureAppRouter(async (req: Request) => {
+  const body = await req.json()
+  const { imageId } = body as { imageId: string }
+  // Image processing logic, i.e. using sharp
+  return new Response(`Image with id "${imageId}" processed successfully.`)
+})
+```
+```bash .env
+# Copy all three from your QStash dashboard
+QSTASH_TOKEN=
+QSTASH_CURRENT_SIGNING_KEY=
+QSTASH_NEXT_SIGNING_KEY=
+```
+Just like that, we set up a reliable and asynchronous image processing system in Next.js. The same logic works for email queues, reliable webhook processing, long-running report generations and many more.
+## Example project
+- Create an Upstash account and get your [QStash token](https://console.upstash.com/qstash)
+- Node.js installed
+## Result
+We have now created a Next.js app that calls a long-running background job using QStash!
+Here's the app in action:
+We can also view the logs on Vercel and QStash
+And the code for the 3 files we created:
+Now, go ahead and try it out for yourself! Try using some of the other features of QStash, like
+[schedules](/qstash/features/schedules), [callbacks](/qstash/features/callbacks), and [URL Groups](/qstash/features/url-groups).

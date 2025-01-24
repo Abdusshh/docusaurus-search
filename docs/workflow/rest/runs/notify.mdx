@@ -1,0 +1,13 @@
+---
+description: '"Resume workflows waiting for an event"'
+title: '"Notify Workflows"'
+---
+Notify workflows waiting for an event to resume them. See [our documentation to learn more](/workflow/howto/events).
+## Request
+## Response
+The response contains a list of notified waiter objects and id of the message sent as a result of the notify request.
+```typescript
+type NotifyResponse = { waiter: Waiter, messageId: string }[]
+```
+More information about the `Waiter` object:
+If there were no workflows waiting for the event, the result is an empty list.

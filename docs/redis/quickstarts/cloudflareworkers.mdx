@@ -1,0 +1,70 @@
+---
+title: '" Cloudflare Workers"'
+---
+### Database Setup
+Create a Redis database using [Upstash Console](https://console.upstash.com) or
+[Upstash CLI](https://github.com/upstash/cli). Select the global to minimize the
+latency from all edge locations.
+### Project Setup
+We will use **C3 (create-cloudflare-cli)** command-line tool to create our application. You can open a new terminal window and run C3 using the prompt below.
+This will install the `create-cloudflare` package, and lead you through setup. C3 will also install Wrangler in projects by default, which helps us testing and deploying the application.
+```text
+➜  npm create cloudflare@latest
+Need to install the following packages:
+  create-cloudflare@2.1.0
+Ok to proceed? (y) y
+using create-cloudflare version 2.1.0
+╭ Create an application with Cloudflare Step 1 of 3
+│
+├ In which directory do you want to create your application?
+│ dir ./cloudflare_starter
+│
+├ What type of application do you want to create?
+│ type "Hello World" Worker
+│
+├ Do you want to use TypeScript?
+│ yes typescript
+│
+├ Copying files from "hello-world" template
+│
+├ Do you want to use TypeScript?
+│ yes typescript
+│
+├ Retrieving current workerd compatibility date
+│ compatibility date 2023-08-07
+│
+├ Do you want to use git for version control?
+│ yes git
+│
+╰ Application created
+```
+We will also install the **Upstash Redis SDK** to connect to Redis.
+```bash
+npm install @upstash/redis
+```
+### The Code
+Here is a Worker template to configure and test Upstash Redis connection.
+### Configure Credentials
+There are two methods for setting up the credentials for Upstash Redis client. The recommended way is to use Cloudflare Upstash Integration. Alternatively, you can add the credentials manually.
+#### Using the Cloudflare Integration
+Access to the [Cloudflare Dashboard](https://dash.cloudflare.com) and login with the same account that you've used while setting up the Worker application. Then, navigate to **Workers & Pages > Overview** section on the sidebar. Here, you'll find your application listed.
+Clicking on the application will direct you to the application details page, where you can perform the integration process. Switch to the **Settings** tab in the application details, and proceed to **Integrations** section. You will see various Worker integrations listed. To proceed, click the **Add Integration** button associated with the Upstash Redis.
+On the Integration page, connect to your Upstash account. Then, select the related database from the dropdown menu. Finalize the process by pressing Save button.
+#### Setting up Manually
+Navigate to [Upstash Console](https://console.upstash.com) and copy/paste your `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` to your `wrangler.toml` as below.
+```yaml
+[vars]
+UPSTASH_REDIS_REST_URL="REPLACE_HERE"
+UPSTASH_REDIS_REST_TOKEN="REPLACE_HERE"
+```
+### Test and Deploy
+You can test the function locally with `npx wrangler dev`
+Deploy your function to Cloudflare with `npx wrangler deploy`
+The endpoint of the function will be provided to you, once the deployment is done.
+### Repo
+Javascript:
+[https://github.com/upstash/upstash-redis/tree/main/examples/cloudflare-workers](https://github.com/upstash/upstash-redis/tree/main/examples/cloudflare-workers)
+Typescript:
+[https://github.com/upstash/upstash-redis/tree/main/examples/cloudflare-workers-with-typescript](https://github.com/upstash/upstash-redis/tree/main/examples/cloudflare-workers-with-typescript)
+Wrangler 1:
+[https://github.com/upstash/upstash-redis/tree/main/examples/cloudflare-workers-with-wrangler-1](https://github.com/upstash/upstash-redis/tree/main/examples/cloudflare-workers-with-wrangler-1)

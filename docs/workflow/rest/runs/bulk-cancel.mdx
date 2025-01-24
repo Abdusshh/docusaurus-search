@@ -1,0 +1,17 @@
+---
+description: '"Cancel multiple workflow runs"'
+title: '"Bulk Cancel Workflows"'
+---
+Bulk cancel allows you to cancel multiple workflow runs at once.
+This operation scans all your workflow runs and attempts to cancel them.
+If a specific workflow run cannot be canceled, it will return an error message.
+Therefore, some workflow runs may not be cancelled at the end.
+In such cases, you can run the bulk cancel operation multiple times.
+## Request
+## Response
+A cancelled object with the number of cancelled workflow runs.
+```JSON
+{
+  "cancelled": number
+}
+```

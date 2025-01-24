@@ -1,0 +1,32 @@
+---
+title: '"Prometheus - Upstash Redis Integration"'
+---
+To monitor your Upstash database in Prometheus and visualize metrics in Grafana, follow these steps:
+## **Step 1: Log in to Your Upstash Account**
+1. Open your web browser and navigate to [Upstash](https://console.upstash.com/).
+2. Navigate to the main dashboard, where you’ll see a list of your databases.
+## **Step 2: Select your Database**
+1. Select the database you want to integrate with Prometheus.
+2. This will open the database settings, where you can manage various configuration options for your selected database.
+![configuration.png](/img/prometheus/configuration.png)
+3. Enable Prometheus by toggling the switch. This allows you to monitor metrics related to your Upstash database performance, usage, and other key metrics.
+## **Step 3: Connect Accounts**
+1. After enabling Prometheus, a monitoring token is generated and displayed.
+2. Copy this token. This token is unique to your database and is required to authenticate Prometheus with the Upstash metrics endpoint.
+![monitoring-token.png](/img/prometheus/monitoring-token.png)
+## **Step 4: Configure Prometheus to Scrape Upstash Metrics**
+1. Open your Grafana instance, navigate to the Data Sources section, and select Prometheus as the data source.
+![datasource.png](/img/prometheus/datasource.png)
+2. Enter the data source name, set `https://api.upstash.com/monitoring/prometheus` as the data source address, and then add your monitoring token in the HTTP Header section.
+![headers.png](/img/prometheus/headers.png)
+3. Then, click <b>Test and Save</b> to verify that the data source is working properly.
+![datasource-final.png](/img/prometheus/datasource-final.png)
+## **Step 5: Wait for Metrics Availability**
+To visualize your Upstash metrics, you can use a pre-built Grafana dashboard.
+Select your Prometheus data source when prompted, and complete the import.
+Please check this address to access Upstash Grafana Dashboard <a href="https://grafana.com/grafana/dashboards/22257-upstash-redis-dashboard/"> Dashboard </a>
+![grafana-dashboard.png](/img/prometheus/grafana-dashboard.png)
+## **Conclusion**
+You've now integrated your database with Upstash Prometheus, providing access to improved monitoring and analytics.
+Feel free to explore Upstash's features and dashboards to gain deeper insights into your system's performance.
+If you encounter any issues or have questions, please refer to the Upstash support documentation or contact our support team for assistance.

@@ -78,6 +78,7 @@ const config: Config = {
       logo: {
         alt: 'Upstash Logo',
         src: 'img/logo.svg',
+        srcDark: 'img/logo-dark.svg',
       },
       items: [
         {

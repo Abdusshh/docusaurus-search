@@ -12,24 +12,24 @@ function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   const { hoveredProduct } = useProduct();
   
-  const headerClassName = clsx('hero', styles.heroBanner, {
-    [styles.heroBannerRedis]: hoveredProduct === 'redis',
-    [styles.heroBannerVector]: hoveredProduct === 'vector',
-    [styles.heroBannerQStash]: hoveredProduct === 'qstash',
+  const titleClassName = clsx(styles.heroTitle, {
+    [styles.heroTitleRedis]: hoveredProduct === 'redis',
+    [styles.heroTitleVector]: hoveredProduct === 'vector',
+    [styles.heroTitleQStash]: hoveredProduct === 'qstash',
   });
 
   return (
-    <header className={headerClassName}>
+    <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
-        <Heading as="h1" className={styles.heroTitle}>
+        <Heading as="h1" className={titleClassName}>
           {siteConfig.title}
         </Heading>
         <p className={styles.heroSubtitle}>{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link
-            className="button button--secondary button--lg"
+            className={styles.button}
             to="/docs/vector/features/hybridindexes">
-            Using Upstash Vector Hybrid Indexes
+            Check out Hybrid Indexes!
           </Link>
         </div>
       </div>

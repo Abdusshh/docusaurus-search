@@ -10,8 +10,8 @@
 .features {
   display: flex;
   align-items: center;
-  padding: 2rem 0;
   width: 100%;
+  padding-top: 1rem;
   background: var(--ifm-background-color);
 }
 
@@ -26,7 +26,6 @@
   border-radius: 12px;
   background: var(--ifm-background-surface-color);
   border: 1px solid var(--ifm-color-emphasis-200);
-  transition: all 0.3s ease;
   height: 100%;
   margin: 1rem;
   display: flex;
@@ -36,7 +35,7 @@
 .featureCard:hover {
   transform: translateY(-4px);
   border-color: var(--ifm-color-emphasis-300);
-  background: var(--ifm-background-surface-color);
+  transition: transform 0.3s ease;
 }
 
 .cardContent {
@@ -50,53 +49,37 @@
   font-weight: 700;
   margin-bottom: 1rem;
   color: var(--ifm-heading-color);
-  transition: all 0.5s ease;
-  background-size: 200% auto;
 }
 
-/* Redis hover effect */
+/* Product-specific title hover effects */
 .featureCard:hover .featureTitle[data-product="redis"] {
-  background: linear-gradient(
-    270deg,
-    #DC382D 0%,
-    #FF4B40 50%,
-    #DC382D 100%
-  );
+  background: linear-gradient(270deg, #DC382D 0%, #FF4B40 50%, #DC382D 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: shimmer 3s linear infinite;
+  transition: background 0.3s ease;
 }
 
-/* Vector hover effect */
 .featureCard:hover .featureTitle[data-product="vector"] {
-  background: linear-gradient(
-    270deg,
-    #EA580C 0%,
-    #FB923C 50%,
-    #EA580C 100%
-  );
+  background: linear-gradient(270deg, #EA580C 0%, #FB923C 50%, #EA580C 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: shimmer 3s linear infinite;
+  transition: background 0.3s ease;
 }
 
-/* QStash hover effect */
 .featureCard:hover .featureTitle[data-product="qstash"] {
-  background: linear-gradient(
-    270deg,
-    #7E22CE 0%,
-    #A855F7 50%,
-    #7E22CE 100%
-  );
+  background: linear-gradient(270deg, #7E22CE 0%, #A855F7 50%, #7E22CE 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: shimmer 3s linear infinite;
+  transition: background 0.3s ease;
 }
 
 .featureDescription {
@@ -120,7 +103,6 @@
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-size: 0.875rem;
-  transition: all 0.2s ease;
   text-decoration: none;
   display: inline-block;
   min-width: 120px;
@@ -130,4 +112,5 @@
   background: var(--ifm-color-emphasis-200);
   text-decoration: none;
   color: var(--ifm-color-emphasis-900);
+  transition: all 0.3s ease;
 }

@@ -1,0 +1,11 @@
+---
+title: '"Pricing"'
+---
+Upstash Workflow is based on QStash and uses a "pay-as-you-go" pricing model. You only incur costs when your app receives traffic, meaning there's no charge when it's not in use. Click [here](https://upstash.com/pricing/qstash) to view the QStash pricing.
+A workflow run consists of several QStash messages, with the total cost determined by the number of messages used.
+You can track your current message usage and associated costs in the [Overview tab of the console](https://console.upstash.com/qstash?tab=details).
+For detailed pricing information based on different plans, visit our [QStash pricing page](https://upstash.com/pricing/qstash).
+### Message Usage per Workflow Run
+- [context.run](/workflow/basics/context#context-run), [context.sleep](/workflow/basics/context#context-sleep), [context.sleepUntil](/workflow/basics/context#context-sleepuntil), or [context.waitForEvent](/workflow/basics/context#context-waitforevent) commands generate a single message.
+- The [context.call](/workflow/basics/context#context-call) command generates two messages.
+- If the workflow endpoint or URL in [context.call](/workflow/basics/context#context-call) returns an error or is unreachable, the workflow SDK will retry the call (up to 3 times by default). Each retry counts as a new message.

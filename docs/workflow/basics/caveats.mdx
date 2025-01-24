@@ -1,0 +1,71 @@
+---
+title: '"Caveats"'
+---
+## Introduction
+In this guide, we'll look at best practices and caveats for using Upstash Workflow.
+## Core Principles
+### Execute business logic in `context.run`
+Your workflow endpoint will be called multiple times during a workflow run. Therefore:
+- Place your business logic code inside the `context.run` function for each step
+- Code outside `context.run` only serves to connect steps
+Example:
+```typescript api/workflow/route.ts
+export const { POST } = serve<string>(async (context) => {
+  const input = context.requestPayload
+  const result = await context.run("step-1", () => {
+    return { success: true }
+  })
+  console.log("This log will appear multiple times")
+  await context.run("step-2", () => {
+    console.log("This log will appear just once")
+    console.log("Step 1 status is:", result.success)
+  })
+})
+```
+### Return Results from context.run for Later Use
+Always return step results if needed in subsequent steps.
+Because your workflow endpoint is called multiple times, `result` will be unitialized when the endpoint is called again to run `step-2`.
+If you are curious about why an endpoint is called multiple times, see [how Workflow works](/workflow/how).
+## Avoiding Common Pitfalls
+### Avoid Non-deterministic Code Outside `context.run`
+A workflow endpoint should always produce the same results, even if it's called multiple times. Avoid:
+- Non-idempotent functions
+- Time-dependent code
+- Randomness
+Example of what to avoid:
+If you implement a non-idempotent code like the one shown above, you might encounter `Failed to authenticate Workflow request.` errors. This can happen if you `return` based on the result of the non-idempotent code before any workflow step.
+To prevent this, ensure that the non-idempotent code (such as `getResultFromDb` in the example) runs within `context.run`.
+```ts
+const result = await context.run(async () => {
+  await getResultFromDb(entryId)
+});
+if (result.return) {
+  return;
+}
+```
+### Ensure Idempotency in `context.run`
+Business logic should be idempotent due to potential retries in distributed systems. In other words, **when a workflow runs twice with the same input, the end result should be the same as if the workflow only ran once**.
+In the example below, the `someWork` function must be idempotent:
+```typescript api/workflow/route.ts
+export const { POST } = serve<string>(async (context) => {
+  const input = context.requestPayload
+  await context.run("step-1", async () => {
+    return someWork(input)
+  })
+})
+```
+Imagine that `someWork` executes once and makes a change to a database. However, before the database had a chance to respond with the successful change, the connection is lost. Your Workflow cannot know if the database change was successful or not. The caller has no choice but to retry, which will cause `someWork` to run twice.
+If `someWork` is not idempotent, this could lead to unintended consequences. For example duplicated records or corrupted data. Idempotency is crucial to maintaining the integrity and reliability of your workflow.
+### Don't Nest Context Methods
+Avoid calling `context.call`, `context.sleep`, `context.sleepFor`, or `context.run` within another `context.run`.
+```typescript api/workflow/route.ts
+import { serve } from "@upstash/workflow/nextjs"
+export const { POST } = serve<string>(async (context) => {
+  const input = context.requestPayload
+  await context.run("step-1", async () => {
+    await context.sleep(...) // ❌ INCORRECT
+    await context.run(...) // ❌ INCORRECT
+    await context.call(...) // ❌ INCORRECT
+  })
+})
+```

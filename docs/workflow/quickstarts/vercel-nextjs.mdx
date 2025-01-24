@@ -1,0 +1,70 @@
+---
+title: '"Next.js"'
+---
+This guide provides detailed, step-by-step instructions on how to use and deploy Upstash Workflow with Next.js. You can also explore our [Next.js example](https://github.com/upstash/workflow-js/tree/main/examples/nextjs) for a detailed, end-to-end example and best practices.
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/yOcz5fA3Tsc?rel=0&disablekb=1"
+  title="YouTube video player"
+  frameBorder="0"
+  allow="accelerometer; fullscreen; clipboard-write; encrypted-media; gyroscope"
+  allowFullScreen
+></iframe>
+## Prerequisites
+1. An Upstash QStash API key.
+2. Node.js and npm (another package manager) installed.
+If you haven't obtained your QStash API key yet, you can do so by [signing up](https://console.upstash.com/login) for an Upstash account and navigating to your QStash dashboard.
+## Step 1: Installation
+First, install the Workflow SDK in your Next.js project:
+## Step 2: Configure Environment Variables
+Create a `.env.local` file in your project root and add your QStash token. This token is used to authenticate your application with the QStash service.
+```bash Terminal
+touch .env.local
+```
+Open the environment file and add your QStash token:
+```bash .env.local
+QSTASH_TOKEN=xxxxxxxxx
+```
+Replace `xxxxxxxxx` with your actual QStash token found here:
+## Step 3: Create a Workflow Endpoint
+A workflow endpoint allows you to define a set of steps that, together, make up a workflow. Each step contains a piece of business logic that is automatically retried on failure, with easy monitoring via our visual workflow dashboard.
+To define a workflow endpoint in a Next.js project, navigate into the Next.js `app/api` directory and create a new folder, for example called `workflow`. Inside this folder, create a `route.ts` file that contains your workflow:
+## Step 4: Run the Workflow Endpoint
+Upstash Workflow is powered by [QStash](/qstash/overall/getstarted), and QStash needs a publicly accessible URL to run your workflows. Here's how to [set up your workflow endpoint for local development](/workflow/howto/local-development).
+Once you have a live URL, proceeed with either one of the following steps:
+### Setting an enviroment variable (recommended)
+Set your publically accessible URL as an environment variable. This variable is only needed for local development and doesn't need to be set in production:
+```bash .env.local
+UPSTASH_WORKFLOW_URL=https://<YOUR_NGROK_OR_TUNNEL_URL>/
+```
+### Using the `baseUrl` option
+As an alternative to setting an environment variable, you can also use the `baseUrl` option in the `serve` method. This option is only needed for local development and can be omitted in production:
+### Triggering the workflow
+After setting your live URL as the environment variable or `baseUrl` option, trigger your workflow by first starting your Next.js app:
+```bash Terminal
+npm run dev
+```
+and then making a POST request to your workflow endpoint. For each workflow run, a unique workflow run ID is returned:
+```bash Terminal
+curl -X POST https://<YOUR_NGROK_OR_TUNNEL_URL>/api/workflow
+# result: {"workflowRunId":"wfr_xxxxxx"}
+```
+In Nextjs Pages, always send `content-type: text/plain` header.
+See the [documentation on starting a workflow](/workflow/howto/start) for other ways you can start your workflow.
+Use this ID to track the workflow run and see its status in your QStash workflow dashboard. All steps are listed with their statuses, headers, and body for a detailed overview of your workflow from start to finish. Click on a step to see its detailed logs.
+## Step 5: Deploying to Production
+When deploying your Next.js application with Upstash Workflow to production, there are a few key points to keep in mind:
+1. **Environment Variables**: Make sure that all necessary environment variables are set in your Vercel project settings. For example, your `QSTASH_TOKEN` and any other configuration variables your workflow might need.
+2. **Remove Local Development Settings**: In your production code, you can remove or conditionally exclude any local development settings. For example, the `baseUrl` option in the `serve` function can be omitted in production:
+3. **Deployment**: Deploy your Next.js application to Vercel, AWS Amplify or other platforms as you normally would. These platforms will automatically detect and build your Next.js application.
+4. **Verify Workflow Endpoint**: After deployment, verify that your workflow endpoint is accessible by making a POST request to your production URL:
+   ```bash Terminal
+   curl -X POST https://<YOUR-PRODUCTION-URL>/api/workflow
+   ```
+5. **Monitor in QStash Dashboard**: Use the QStash dashboard to monitor your production workflows. You can track workflow runs, view step statuses, and access detailed logs.
+6. **Set Up Alerts**: Consider setting up alerts in Sentry or other monitoring tools to be notified of any workflow failures in production.
+## Next Steps
+1. Learn how to protect your workflow endpoint from unauthorized access by [securing your workflow endpoint](/workflow/howto/security).
+2. Explore our [Next.js example](https://github.com/upstash/workflow-js/tree/main/examples/nextjs) for a detailed, end-to-end example and best practices.
+3. For setting up and testing your workflows in a local environment, check out our [local development guide](/workflow/howto/local-development).

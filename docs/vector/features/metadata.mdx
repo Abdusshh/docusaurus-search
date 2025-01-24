@@ -1,0 +1,63 @@
+---
+title: '"Metadata and Data"'
+---
+## Metadata
+Metadata feature allows you to store context with your vectors to make a connection.
+There can be a couple of uses of this:
+1. You can put the source of the vector in the metadata to use in your application from the query response.
+2. You can put some metadata to further filter the results upon the query.
+You can set metadata with your vector as follows:
+When you do a query or fetch, you can opt-in to retrieve the metadata as follows:
+- **Query Example**
+```json
+{
+  "result": [
+    {
+      "id": "id-0",
+      "score": 1,
+      "metadata": {
+        "url": "https://imgur.com/z9AVZLb"
+      }
+    },
+    {
+      "id": "id-3",
+      "score": 0.99961007,
+      "metadata": {
+        "url": "https://imgur.com/zfOPmnI"
+      }
+    }
+  ]
+}
+```
+Also, you can filter the results further by providing a metadata filter:
+See [Metadata Filtering documentation](https://upstash.com/docs/vector/features/filtering) for more details.
+- **Range Example**
+```json
+{
+  "result": {
+    "nextCursor": "4",
+    "vectors": [
+      { "id": "id-0", "metadata": { "url": "https://imgur.com/z9AVZLb" } },
+      { "id": "id-1", "metadata": { "url": "https://imgur.com/a2nCEIt" } },
+      { "id": "id-2", "metadata": { "url": "https://imgur.com/zfOPmnI" } }
+    ]
+  }
+}
+```
+## Data
+Data is another kind of information you can store per vector
+to attribute some context to it. Compared to metadata, it is not
+structured, and it can only be fetched in queries, not used
+to further filter them.
+It is especially useful when you upsert raw text data, so that you
+would have access to the textual form of vector along with the
+embedded vector values.
+It can save you from storing contextual information per vector
+in a separate database.
+You can set both the metadata and data, or only one of them
+while upserting your vectors as follows:
+When a raw text data is upserted, the data will be set to
+the raw text data automatically:
+Similar to metadata, the data field can be requested in queries, range
+iterator, and fetch requests, by setting the `includeData` to `true` as
+shown above.

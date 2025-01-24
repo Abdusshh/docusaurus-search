@@ -1,0 +1,39 @@
+---
+description: '"Create a Redis compatible database in seconds"'
+title: '"Getting Started"'
+---
+## Create a Database
+Once you logged in, you can create a database by clicking on the plus sign at
+the top right corner.
+**Database Name:** Type a name for your database.
+**Primary Region and Read Regions:** Choose the regions for your database. For optimal performance, select the Primary region closest to where most of your writes will happen. Select Read Region(s) where most of your reads will happen. We have plans to expand support to additional regions and cloud providers. Feel free to send your requests to [feedback@upstash.com](mailto:feedback@upstash.com) to help us prioritize.
+Once you click on Create button, you should see your database up and running as
+below:
+## Connect to Your Database
+You can connect to your database with any Redis client. For simplicity, we will
+use `redis-cli` tool in this guide but please refer to
+[Connect Your Client](../howto/connectclient) section for more about connecting
+via Redis clients.
+`redis-cli` comes packaged with the official Redis distribution. If you do not
+have Redis installed, you can get it as described at
+<a href="https://redis.io/topics/quickstart" target="_blank">
+  {" "}
+  Redis Quick Start
+</a>
+document. Now, you can connect to and run commands on your database as below:
+```
+> redis-cli --tls -a PASSWORD -h ENDPOINT -p PORT
+Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
+ENDPOINT:PORT> set counter 0
+OK
+ENDPOINT:PORT> get counter
+"0"
+ENDPOINT:PORT> incr counter
+(int) 1
+ENDPOINT:PORT> incr counter
+(int) 2
+```
+Now you will start to see some action on the charts. Please go to
+[Metrics and Charts](../howto/metricsandcharts) section for detailed information
+about metrics and charts. Note that charts are updated every 10 seconds.
+Congratulations! You have created your first database with Upstash.

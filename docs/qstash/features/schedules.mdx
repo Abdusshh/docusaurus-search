@@ -1,0 +1,24 @@
+---
+title: '"Schedules"'
+---
+In addition to sending a message once, you can create a schedule, and we will
+publish the message in the given period. To create a schedule, you simply need
+to add the `Upstash-Cron` header to your `publish` request.
+Schedules can be configured using `cron` expressions.
+[crontab.guru](https://crontab.guru/) is a great tool for understanding and
+creating cron expressions.
+We use `UTC` as timezone when evaluating cron expressions.
+The following request would create a schedule that will automatically publish
+the message every minute:
+All of the [other config options](/qstash/howto/publishing#optional-parameters-and-configuration)
+can still be used.
+You can see and manage your schedules in the
+[Upstash Console](https://console.upstash.com/qstash).
+### Scheduling to a URL Group
+Instead of scheduling a message to a specific URL, you can also create a
+schedule, that publishes to a URL Group. Simply use either the URL Group name or its id:
+### Scheduling to a Queue
+You can schedule an item to be added to a queue at a specified time.
+### Overwriting an existing schedule
+You can pass scheduleId explicitly to overwrite an existing schedule or just simply create the schedule
+with the given schedule id.

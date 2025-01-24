@@ -1,0 +1,20 @@
+---
+title: '"Debug Logs"'
+---
+To debug the logs, first you need to understand the different states a message can
+be in.
+Only the last 10.000 logs are kept and older logs are removed automatically.
+## Lifecycle of a Message
+To understand the lifecycle of each message, we'll look at the following chart:
+[comment]: # (https://mermaid.live/edit#pako:eNplkmFr2zAQhv-K0MeRNIvTpa0_DEKiQiHbmJsOtnmMqyTbAlkK0rkQQv57z1Ybt1SfTs-9uns53ZFLrzTPeURAvTFQB2inT1npGJ2_n_6x6fQrWxditRObBNer72ux_V-Inw_inmhSDHBLtyRyHjWzukLmq48vctbqGKHWTIKT2jITKbJWq5cWqd9QebXe3f0Siad4wKIofhRUqAuWBY1dcJFVYCypPmg3YkthMTR-q4-dlOSDnd8UYlf8Hp7cru62g5604cCsaQ1SDLJ59Thq3zpMtnqa8omOBvoMTTXhlybv2DjId7h0fMJbHVowin7r2NOSY6NbXfKcQqUr6CyWvHQnkkKH_v7gJM8xdHrCu70a_5fnFdh4pkIZ9OEMrQel6XrkeNj3q1GbiFRSeleZuuc0Q8IN4j7ms1mfvqgNNt3jhfTtLBrVQMDm6WY5W2bLa8gWenm1gC-LhZKP85vrKrucV-rq8zwDfjpN-B7cH-9HV3rw8y3t5bCep2crG8on)
+Either you or a previously setup schedule will create a message.
+When a message is ready for execution, it will be become `ACTIVE` and a delivery to
+your API is attempted.
+If you API responds with a status code between `200 - 299`, the task is
+considered successful and will be marked as `DELIVERED`.
+Otherwise the message is being retried if there are any retries left and moves to `RETRY`. If all retries are exhausted, the task has `FAILED` and the message will be moved to the DLQ.
+During all this a message can be cancelled via [DELETE /v2/messages/:messageId](https://docs.upstash.com/qstash/api/messages/cancel). When the request is received, `CANCEL_REQUESTED` will be logged first.
+If retries are not exhausted yet, in the next deliver time, the message will be marked as `CANCELLED` and will be completely removed from the system.
+## Console
+Head over to the [Upstash Console](https://console.upstash.com/qstash) and go to
+the `Logs` tab, where you can see the latest events.

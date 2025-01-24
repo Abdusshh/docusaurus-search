@@ -3,11 +3,17 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+require('dotenv').config()
 
 const config: Config = {
   title: 'My Site',
   tagline: 'Dinosaurs are cool',
   favicon: 'img/favicon.ico',
+
+  customFields: {
+    UPSTASH_VECTOR_REST_URL: process.env.UPSTASH_VECTOR_REST_URL,
+    UPSTASH_VECTOR_REST_TOKEN: process.env.UPSTASH_VECTOR_REST_TOKEN,
+  },
 
   // Set the production url of your site here
   url: 'https://your-docusaurus-site.example.com',

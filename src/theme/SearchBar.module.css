@@ -1,0 +1,115 @@
+.searchContainer {
+  position: relative;
+  margin: 0 1rem;
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  padding: 0.5rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 200px;
+  transition: width 0.2s ease-in-out;
+}
+
+.searchInput:focus {
+  width: 300px;
+  outline: none;
+  border-color: var(--ifm-color-primary);
+}
+
+.searchButton {
+  margin-left: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--ifm-color-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.searchButton:hover {
+  background-color: var(--ifm-color-primary-darker);
+}
+
+.searchResults {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
+  backdrop-filter: blur(8px);
+}
+
+.searchResultItem {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background-color: var(--ifm-background-surface-color);
+  margin-bottom: 0.25rem;
+  border-radius: 4px;
+}
+
+.searchResultItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.searchResultItem:hover {
+  background-color: var(--ifm-hover-overlay);
+}
+
+.resultTitle {
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+  margin-bottom: 0.25rem;
+}
+
+.resultPath {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.resultPreview {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+  margin-top: 0.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.loadingSpinner {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  color: var(--ifm-color-primary);
+}
+
+.noResults {
+  padding: 1rem;
+  text-align: center;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.searchResultsPlaceholder {
+  text-align: center;
+  color: var(--ifm-color-emphasis-600);
+  padding: 1rem;
+}

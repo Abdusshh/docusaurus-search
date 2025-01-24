@@ -1,0 +1,12 @@
+---
+description: '"Stop a running workflow run"'
+title: '"Cancel Workflow"'
+---
+Cancelling a workflow run will remove it from QStash and stop it from being delivered
+in the future.
+## Request
+## Response
+This endpoint returns
+- `200 OK` when successful.
+- `404 NOT FOUND` when a workflow run is not found with the given id.
+- `500 INTERNAL SERVER` when an unexpected error occurs.

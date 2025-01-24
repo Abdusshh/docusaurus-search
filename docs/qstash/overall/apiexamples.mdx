@@ -1,0 +1,34 @@
+---
+title: '"API Examples"'
+---
+### Use QStash via:
+- cURL
+- [Typescript SDK](https://github.com/upstash/sdk-qstash-ts)
+- [Python SDK](https://github.com/upstash/qstash-python)
+Below are some examples to get you started. You can also check the [how to](/qstash/howto/publishing) section for
+more technical details or the [API reference](/qstash/api/messages) to test the API.
+### Publish a message to an endpoint
+Simple example to [publish](/qstash/howto/publishing) a message to an endpoint.
+### Publish a message to a URL Group
+The [URL Group](/qstash/features/url-groups) is a way to publish a message to multiple endpoints in a
+fan out pattern.
+### Publish a message with 5 minutes delay
+Add a delay to the message to be published. After QStash receives the message,
+it will wait for the specified time (5 minutes in this example) before sending the message to the endpoint.
+### Send a custom header
+Add a custom header to the message to be published.
+### Schedule to run once a day
+### Publish messages to a FIFO queue
+By default, messges are published concurrently. With a [queue](/qstash/features/queues), you can enqueue messages in FIFO order.
+### Publish messages in a [batch](/qstash/features/batch)
+Publish multiple messages in a single request.
+### Set max retry count to 3
+Configure how many times QStash should retry to send the message to the endpoint before
+sending it to the [dead letter queue](/qstash/features/dlq).
+### Set callback url
+Receive a response from the endpoint and send it to the specified callback URL.
+If the endpoint returns a response, QStash will send it to the failure callback URL.
+### List all events
+Retrieve a list of all [events](https://upstash.com/docs/qstash/api/events/list) that have
+been published (filtering is also available).
+### List all schedules

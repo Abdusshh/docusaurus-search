@@ -48,7 +48,7 @@ export default function SearchBar(): JSX.Element {
           includeData: true,
           includeMetadata: true,
         }, {
-          namespace: "docs"
+          namespace: "docusaurus-search" // Replace with your namespace
         });
         
         // Map the query results to match SearchResult type
@@ -95,10 +95,14 @@ export default function SearchBar(): JSX.Element {
 
   // Handle result click
   const handleResultClick = (result: SearchResult) => {
-    history.push(result.metadata.filePath);
-    setIsSearchOpen(false);
-    setSearchResults([]);
+    // Extract the docs path from the full file path by removing the repo prefix
+    const docsPath = result.metadata.filePath.replace(/^temp_repo/, '');
+    
+    // Remove the file extension for cleaner URLs
+    const cleanPath = docsPath.replace(/\.mdx?$/, '');
+    history.push(cleanPath);
     setSearchQuery('');
+    setSearchResults([]);
   };
 
   return (

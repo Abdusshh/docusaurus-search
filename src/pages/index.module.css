@@ -3,11 +3,35 @@
  * and scoped locally.
  */
 
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .heroBanner {
   padding: 4rem 0;
   text-align: center;
   position: relative;
   overflow: hidden;
+  background-size: 200% 200%;
+  animation: gradientFlow 10s ease infinite;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media screen and (max-width: 996px) {
@@ -20,4 +44,67 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.heroTitle {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.heroSubtitle {
+  font-size: 1.5rem;
+  color: #E0E7E4;
+  margin-bottom: 2rem;
+}
+
+/* Default gradient - Light theme */
+[data-theme='light'] .heroBanner {
+  background-image: linear-gradient(135deg, 
+    #2A967D 0%,
+    #00D4A3 50%,
+    #2A967D 100%
+  );
+}
+
+/* Default gradient - Dark theme */
+[data-theme='dark'] .heroBanner {
+  background-image: linear-gradient(135deg, 
+    #1B4D3E 0%,
+    #00B086 50%,
+    #1B4D3E 100%
+  );
+}
+
+/* Redis gradient */
+.heroBannerRedis {
+  background-image: linear-gradient(135deg, 
+    #8B1A15 0%,
+    #DC382D 50%,
+    #8B1A15 100%
+  ) !important;
+}
+
+/* Vector gradient */
+.heroBannerVector {
+  background-image: linear-gradient(135deg, 
+    #9A3805 0%,
+    #EA580C 50%,
+    #9A3805 100%
+  ) !important;
+}
+
+/* QStash gradient */
+.heroBannerQStash {
+  background-image: linear-gradient(135deg, 
+    #4C1580 0%,
+    #7E22CE 50%,
+    #4C1580 100%
+  ) !important;
+}
+
+[data-theme='dark'] .heroSubtitle {
+  color: #E0E7E4;
 }

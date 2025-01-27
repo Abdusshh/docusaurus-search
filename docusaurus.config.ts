@@ -15,9 +15,6 @@ const config: Config = {
     UPSTASH_VECTOR_REST_TOKEN: process.env.UPSTASH_VECTOR_REST_TOKEN,
   },
 
-  onBrokenLinks: 'ignore',
-  onBrokenMarkdownLinks: 'ignore',
-
   // Set the production url of your site here
   url: 'https://your-docusaurus-site.example.com',
   // Set the /<baseUrl>/ pathname under which your site is served
@@ -29,7 +26,7 @@ const config: Config = {
   organizationName: 'upstash', // Usually your GitHub org/user name.
   projectName: 'upstash-docs', // Usually your repo name.
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'ignore',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set

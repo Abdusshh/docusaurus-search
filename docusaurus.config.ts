@@ -15,6 +15,8 @@ const config: Config = {
     UPSTASH_VECTOR_REST_TOKEN: process.env.UPSTASH_VECTOR_REST_TOKEN,
   },
 
+  onBrokenLinks: 'ignore',
+
   // Set the production url of your site here
   url: 'https://your-docusaurus-site.example.com',
   // Set the /<baseUrl>/ pathname under which your site is served

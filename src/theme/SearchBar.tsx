@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useHistory } from '@docusaurus/router';
 import { Index } from "@upstash/vector";
+import { useColorMode } from '@docusaurus/theme-common';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 import styles from './SearchBar.module.css';
 
 interface SearchResult {
@@ -15,7 +17,7 @@ interface SearchResult {
   };
 }
 
-export default function SearchBar(): JSX.Element {
+const SearchBarContent = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -25,20 +27,7 @@ export default function SearchBar(): JSX.Element {
   const searchResultsRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
   const {siteConfig} = useDocusaurusContext();
-  const [isDarkTheme, setIsDarkTheme] = useState(document.documentElement.getAttribute('data-theme') === 'dark');
-
-  useEffect(() => {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'data-theme') {
-          setIsDarkTheme(document.documentElement.getAttribute('data-theme') === 'dark');
-        }
-      });
-    });
-
-    observer.observe(document.documentElement, { attributes: true });
-    return () => observer.disconnect();
-  }, []);
+  const { colorMode } = useColorMode();
 
   // Initialize Upstash Vector client
   const index = new Index({
@@ -110,14 +99,11 @@ export default function SearchBar(): JSX.Element {
 
   // Handle result click
   const handleResultClick = (result: SearchResult) => {
-    // Extract the docs path from the full file path by removing the repo prefix
     const docsPath = result.metadata.filePath.replace(/^temp_repo/, '');
-    
-    // Remove the file extension for cleaner URLs
     const cleanPath = docsPath.replace(/\.mdx?$/, '');
     history.push(cleanPath);
+    setIsSearchOpen(false);
     setSearchQuery('');
-    setSearchResults([]);
   };
 
   return (
@@ -161,7 +147,7 @@ export default function SearchBar(): JSX.Element {
           <div className={styles.poweredBy}>
             <span>Powered by</span>
             <img 
-              src={isDarkTheme ? "/img/logo-dark.svg" : "/img/logo.svg"}
+              src={colorMode === 'dark' ? "/img/logo-dark.svg" : "/img/logo.svg"}
               alt="Upstash Logo" 
               className={styles.searchLogo}
             />
@@ -198,5 +184,13 @@ export default function SearchBar(): JSX.Element {
         </div>
       )}
     </div>
+  );
+};
+
+export default function SearchBar(): JSX.Element {
+  return (
+    <BrowserOnly>
+      {() => <SearchBarContent />}
+    </BrowserOnly>
   );
 }

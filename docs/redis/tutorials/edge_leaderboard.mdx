@@ -98,9 +98,9 @@ curl -X POST http://127.0.0.1:8787\?player\=benzema\&score\=18
 ```
 Get the leaderboard:
 ```shell
-curl -w '\n Latency: %{time_total}s\n' http://127.0.0.1:8787
+curl -w '\n Latency: time_total s\n' http://127.0.0.1:8787
 ```
-Call the “curl -w '\n Total: %{time_total}s\n'
+Call the “curl -w '\n Total: time_total s\n'
 [http://127.0.0.1:8787](http://127.0.0.1:8787)” multiple times. You will see the
 latency becomes very small with the next calls as the cached result comes from
 the edge.

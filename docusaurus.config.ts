@@ -16,6 +16,7 @@ const config: Config = {
   },
 
   onBrokenLinks: 'ignore',
+  onBrokenMarkdownLinks: 'ignore',
 
   // Set the production url of your site here
   url: 'https://your-docusaurus-site.example.com',

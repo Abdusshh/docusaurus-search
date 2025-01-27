@@ -25,6 +25,20 @@ export default function SearchBar(): JSX.Element {
   const searchResultsRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
   const {siteConfig} = useDocusaurusContext();
+  const [isDarkTheme, setIsDarkTheme] = useState(document.documentElement.getAttribute('data-theme') === 'dark');
+
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'data-theme') {
+          setIsDarkTheme(document.documentElement.getAttribute('data-theme') === 'dark');
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
 
   // Initialize Upstash Vector client
   const index = new Index({
@@ -86,6 +100,7 @@ export default function SearchBar(): JSX.Element {
         !searchInputRef.current?.contains(event.target as Node)
       ) {
         setIsSearchOpen(false);
+        setSearchQuery('');
       }
     };
 
@@ -107,62 +122,79 @@ export default function SearchBar(): JSX.Element {
 
   return (
     <div className={styles.searchContainer}>
-      <form className={styles.searchForm} onSubmit={e => e.preventDefault()}>
-        <input
-          ref={searchInputRef}
-          type="search"
-          placeholder="Search documentation..."
-          value={searchQuery}
-          onChange={handleSearchInput}
-          className={styles.searchInput}
-          aria-label="Search documentation"
-        />
+      <form className={styles.searchForm} onSubmit={(e) => e.preventDefault()}>
+        <div className={styles.inputWrapper}>
+          <input
+            ref={searchInputRef}
+            type="text"
+            placeholder="Search documentation..."
+            value={searchQuery}
+            onChange={handleSearchInput}
+            className={styles.searchInput}
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              className={styles.clearButton}
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
+            >
+              <svg 
+                viewBox="0 0 24 24" 
+                className={styles.clearIcon}
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2"
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          )}
+        </div>
       </form>
 
       {isSearchOpen && (
         <div ref={searchResultsRef} className={styles.searchResults}>
-          {isLoading && (
-            <div className={styles.loadingSpinner}>
-              Searching...
+          <div className={styles.poweredBy}>
+            <span>Powered by</span>
+            <img 
+              src={isDarkTheme ? "/img/logo-dark.svg" : "/img/logo.svg"}
+              alt="Upstash Logo" 
+              className={styles.searchLogo}
+            />
+          </div>
+          {isLoading ? (
+            <div className={styles.loadingSpinner}>Loading...</div>
+          ) : error ? (
+            <div className={styles.error}>{error}</div>
+          ) : searchResults.length > 0 ? (
+            searchResults.map((result) => (
+              <div
+                key={result.id}
+                className={styles.searchResultItem}
+                onClick={() => handleResultClick(result)}
+              >
+                <div className={styles.resultTitle}>
+                  {result.metadata.fileName.replace('.mdx', '')}
+                </div>
+                <div className={styles.resultPath}>
+                  {result.metadata.filePath.replace(/^temp_repo\//, '').replace('.mdx', '')}
+                </div>
+                <div className={styles.resultPreview}>
+                  {result.data}
+                </div>
+              </div>
+            ))
+          ) : searchQuery ? (
+            <div className={styles.noResults}>No results found</div>
+          ) : (
+            <div className={styles.searchResultsPlaceholder}>
+              Start typing to search...
             </div>
           )}
-
-          {error && (
-            <div className={styles.noResults}>
-              {error}
-            </div>
-          )}
-
-          {!isLoading && !error && searchResults.length === 0 && searchQuery && (
-            <div className={styles.noResults}>
-              No results found for "{searchQuery}"
-            </div>
-          )}
-
-          {!isLoading && !error && searchResults.map((result) => (
-            <div
-              key={result.id}
-              className={styles.searchResultItem}
-              onClick={() => handleResultClick(result)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleResultClick(result);
-                }
-              }}
-            >
-              <div className={styles.resultTitle}>
-                {result.metadata.fileName}
-              </div>
-              <div className={styles.resultPath}>
-                {result.metadata.filePath}
-              </div>
-              <div className={styles.resultPreview}>
-                {result.data}
-              </div>
-            </div>
-          ))}
         </div>
       )}
     </div>

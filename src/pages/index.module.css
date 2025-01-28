@@ -3,16 +3,38 @@
  * and scoped locally.
  */
 
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .heroBanner {
-  padding: 4rem 0;
+  padding: 4rem 0 2rem;
   text-align: center;
   position: relative;
   overflow: hidden;
+  background: var(--ifm-background-color);
 }
 
 @media screen and (max-width: 996px) {
   .heroBanner {
-    padding: 2rem;
+    padding: 2rem 0 1rem;
   }
 }
 
@@ -20,4 +42,88 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.heroTitle {
+  font-size: 6rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.03em;
+  color: var(--ifm-heading-color);
+  line-height: 1.1;
+}
+
+@media screen and (max-width: 768px) {
+  .heroTitle {
+    font-size: 3.5rem;
+  }
+}
+
+.heroTitleRedis {
+  background: linear-gradient(270deg, #DC382D 0%, #FF4B40 50%, #DC382D 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+  transition: background 0.3s ease;
+}
+
+.heroTitleVector {
+  background: linear-gradient(270deg, #EA580C 0%, #FB923C 50%, #EA580C 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+  transition: background 0.3s ease;
+}
+
+.heroTitleQStash {
+  background: linear-gradient(270deg, #7E22CE 0%, #A855F7 50%, #7E22CE 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+  transition: background 0.3s ease;
+}
+
+.heroSubtitle {
+  font-size: 1.5rem;
+  color: var(--ifm-color-emphasis-600);
+  margin-bottom: 2rem;
+}
+
+[data-theme='light'] .heroSubtitle {
+  color: #E0E7E4;
+}
+
+[data-theme='dark'] .heroSubtitle {
+  color: #E0E7E4;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 12px;
+  background: var(--ifm-color-emphasis-200);
+  color: var(--ifm-color-emphasis-800);
+  text-decoration: none;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.button:hover {
+  background: var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-emphasis-900);
+  text-decoration: none;
+  transform: translateY(-1px);
+  transition: all 0.3s ease;
 }

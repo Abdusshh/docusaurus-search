@@ -1,11 +1,116 @@
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 .features {
   display: flex;
   align-items: center;
-  padding: 2rem 0;
   width: 100%;
+  padding-top: 1rem;
+  background: var(--ifm-background-color);
 }
 
 .featureSvg {
-  height: 200px;
-  width: 200px;
+  height: 80px;
+  width: 80px;
+  margin-bottom: 1rem;
+}
+
+.featureCard {
+  padding: 2rem;
+  border-radius: 12px;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  height: 100%;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.featureCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--ifm-color-emphasis-300);
+  transition: transform 0.3s ease;
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.featureTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--ifm-heading-color);
+}
+
+/* Product-specific title hover effects */
+.featureCard:hover .featureTitle[data-product="redis"] {
+  background: linear-gradient(270deg, #DC382D 0%, #FF4B40 50%, #DC382D 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+  transition: background 0.3s ease;
+}
+
+.featureCard:hover .featureTitle[data-product="vector"] {
+  background: linear-gradient(270deg, #EA580C 0%, #FB923C 50%, #EA580C 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+  transition: background 0.3s ease;
+}
+
+.featureCard:hover .featureTitle[data-product="qstash"] {
+  background: linear-gradient(270deg, #7E22CE 0%, #A855F7 50%, #7E22CE 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+  transition: background 0.3s ease;
+}
+
+.featureDescription {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ifm-color-emphasis-700);
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.buttonContainer {
+  margin-top: auto;
+  text-align: center;
+  width: 100%;
+}
+
+.learnMoreButton {
+  background: transparent;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-emphasis-700);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  text-decoration: none;
+  display: inline-block;
+  min-width: 120px;
+}
+
+.learnMoreButton:hover {
+  background: var(--ifm-color-emphasis-200);
+  text-decoration: none;
+  color: var(--ifm-color-emphasis-900);
+  transition: all 0.3s ease;
 }

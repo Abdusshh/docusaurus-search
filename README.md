@@ -2,6 +2,14 @@
 
 This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
+## Upstash Hybrid Index Based Search Usage
+
+Add your credentials to the `.env` file to enable the hybrid index based search.
+
+Make sure the name of you namespace is correct in the [SearchBar file](/src/theme/SearchBar.tsx).
+
+Note: We did not add kafka docs since kafka is deprecated.
+
 ### Installation
 
 ```

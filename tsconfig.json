@@ -1,8 +1,29 @@
+// {
+//   // This file is not used in compilation. It is here just for a nice editor experience.
+//   "extends": "./node_modules/@docusaurus/tsconfig/tsconfig.json",
+//   "compilerOptions": {
+//     "baseUrl": "."
+//   },
+//   "exclude": [".docusaurus", "build"]
+// }
 {
-  // This file is not used in compilation. It is here just for a nice editor experience.
-  "extends": "@docusaurus/tsconfig",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Docusaurus",
+  "docs": "https://docusaurus.io/docs/typescript-support",
   "compilerOptions": {
-    "baseUrl": "."
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "target": "ESNext",
+    "lib": ["ES2022", "DOM"],
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@site/*": ["./*"]
+    },
+    "skipLibCheck": true
   },
   "exclude": [".docusaurus", "build"]
 }

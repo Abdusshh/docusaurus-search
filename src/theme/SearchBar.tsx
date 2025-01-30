@@ -30,8 +30,7 @@ const SearchBarContent = (): JSX.Element => {
   const { colorMode } = useColorMode();
 
   const DEFAULT_INDEX_NAMESPACE = "docusaurus-search-upstash";
-
-  const namespace = `${siteConfig.customFields.UPSTASH_VECTOR_INDEX_NAMESPACE}` || DEFAULT_INDEX_NAMESPACE;
+  const INDEX_NAMESPACE = `${siteConfig.customFields.UPSTASH_VECTOR_INDEX_NAMESPACE}` || DEFAULT_INDEX_NAMESPACE;
 
   // Initialize Upstash Vector client
   const index = new Index({
@@ -59,7 +58,7 @@ const SearchBarContent = (): JSX.Element => {
           includeData: true,
           includeMetadata: true,
         }, {
-          namespace: namespace
+          namespace: INDEX_NAMESPACE
         });
         
         // Map the query results to match SearchResult type

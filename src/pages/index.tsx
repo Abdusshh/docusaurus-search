@@ -29,7 +29,7 @@ function HomepageHeader() {
           <Link
             className={styles.button}
             to="/docs/vector/features/hybridindexes">
-            Check out Hybrid Indexes!
+            Click to learn more about Hybrid Indexes in Upstash Vector!
           </Link>
         </div>
       </div>

@@ -1,8 +1,12 @@
+// Extending this file does not work. It is recommended to update the relevant sections instead.
 // {
 //   // This file is not used in compilation. It is here just for a nice editor experience.
 //   "extends": "./node_modules/@docusaurus/tsconfig/tsconfig.json",
 //   "compilerOptions": {
-//     "baseUrl": "."
+//     "baseUrl": ".",
+//     "target": "ESNext",
+//     "moduleResolution": "NodeNext",
+//     "module": "NodeNext",
 //   },
 //   "exclude": [".docusaurus", "build"]
 // }
@@ -16,8 +20,8 @@
     "jsx": "preserve",
     "target": "ESNext",
     "lib": ["ES2022", "DOM"],
-    "moduleResolution": "node",
-    "module": "ESNext",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
@@ -25,5 +29,5 @@
     },
     "skipLibCheck": true
   },
-  "exclude": [".docusaurus", "build"]
+  "exclude": [".docusaurus", "build"],
 }

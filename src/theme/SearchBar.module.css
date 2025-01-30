@@ -222,11 +222,9 @@
   font-size: 0.9rem;
   color: var(--ifm-color-emphasis-800);
   line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
   background-color: var(--ifm-color-emphasis-100);
   padding: 0.5rem;
   border-radius: 4px;

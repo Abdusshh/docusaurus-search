@@ -47,16 +47,17 @@ const SearchBarContent = (): JSX.Element => {
   // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Command/Ctrl + K to open modal
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      // Press Escape or Command+K to close the search modal
+      if ((e.key === 'Escape' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) && isModalOpen) {
+        e.preventDefault();
+        setIsModalOpen(false);
+        setSearchQuery('');
+      }
+      // Press Command/K to open the search modal
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey) && !isModalOpen) {
         e.preventDefault();
         setIsModalOpen(true);
         setTimeout(() => searchInputRef.current?.focus(), 100);
-      }
-      // Escape to close modal
-      if (e.key === 'Escape' && isModalOpen) {
-        setIsModalOpen(false);
-        setSearchQuery('');
       }
     };
 
@@ -119,7 +120,7 @@ const SearchBarContent = (): JSX.Element => {
 
   // Handle result click
   const handleResultClick = (result: SearchResult) => {
-    const docsPath = result.metadata.filePath.replace(/^docs/, '/docs');
+    const docsPath = '/' + result.metadata.filePath;
     const cleanPath = docsPath.replace(/\.mdx?$/, '');
     history.push(cleanPath);
     setIsModalOpen(false);

@@ -55,25 +55,34 @@ const SearchBarContent = (): JSX.Element => {
       try {
         const results = await index.query({
           data: query,
-          topK: 5,
+          topK: 15,
           includeData: true,
           includeMetadata: true,
         }, {
           namespace: INDEX_NAMESPACE
         });
         
-        // Map the query results to match SearchResult type
-        const mappedResults: SearchResult[] = results.map(result => ({
-          id: String(result.id),
-          data: result.data,
-          metadata: {
-            fileName: result.metadata.fileName as string,
-            filePath: result.metadata.filePath as string,
-            fileType: result.metadata.fileType as string,
-            timestamp: result.metadata.timestamp as number,
-            title: result.metadata.title as string,
-          },
-        }));
+        // Map the query results to match SearchResult type and filter duplicates by filename
+        const seenFilenames = new Set<string>();
+        const mappedResults: SearchResult[] = results
+          .map(result => ({
+            id: String(result.id),
+            data: result.data,
+            metadata: {
+              fileName: result.metadata.fileName as string,
+              filePath: result.metadata.filePath as string,
+              fileType: result.metadata.fileType as string,
+              timestamp: result.metadata.timestamp as number,
+              title: result.metadata.title as string,
+            },
+          }))
+          .filter(result => {
+            if (seenFilenames.has(result.metadata.fileName)) {
+              return false;
+            }
+            seenFilenames.add(result.metadata.fileName);
+            return true;
+          });
         
         setSearchResults(mappedResults);
       } catch (error) {

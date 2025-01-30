@@ -203,14 +203,6 @@ const SearchBarContent = (): JSX.Element => {
                   </div>
                 </div>
               </form>
-              <div className={styles.poweredBy}>
-                <span>Powered by</span>
-                <img 
-                  src={colorMode === 'dark' ? "/img/logo-dark.svg" : "/img/logo.svg"}
-                  alt="Upstash Logo" 
-                  className={styles.searchLogo}
-                />
-              </div>
             </div>
 
             <div ref={searchResultsRef} className={styles.searchResults}>
@@ -243,6 +235,17 @@ const SearchBarContent = (): JSX.Element => {
                   Start typing to search...
                 </div>
               )}
+            </div>
+            
+            <div className={styles.modalFooter}>
+              <div className={styles.poweredBy}>
+                <span>Powered by</span>
+                <img 
+                  src={colorMode === 'dark' ? "/img/logo-dark.svg" : "/img/logo.svg"}
+                  alt="Upstash Logo" 
+                  className={styles.searchLogo}
+                />
+              </div>
             </div>
           </div>
         </div>

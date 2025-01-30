@@ -28,3 +28,30 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+
+/**
+ Test other colors - orange and blue in this example
+ */
+/* :root {
+  --ifm-color-primary: #ff5733;
+  --ifm-color-primary-dark: #e64d2e;
+  --ifm-color-primary-darker: #cc4429;
+  --ifm-color-primary-darkest: #b33b23;
+  --ifm-color-primary-light: #ff6847;
+  --ifm-color-primary-lighter: #ff7559;
+  --ifm-color-primary-lightest: #ff8a74;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(50, 50, 50, 0.1);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #3399ff;
+  --ifm-color-primary-dark: #2e8ce6;
+  --ifm-color-primary-darker: #297fcc;
+  --ifm-color-primary-darkest: #236fb3;
+  --ifm-color-primary-light: #47a3ff;
+  --ifm-color-primary-lighter: #59acff;
+  --ifm-color-primary-lightest: #74bbff;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.3);
+} */

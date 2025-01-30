@@ -19,6 +19,20 @@ function generateId(content: string): string {
     return crypto.createHash('md5').update(content).digest('hex');
 }
 
+// Extract title from markdown frontmatter or use filename
+function extractTitle(content: string, fileName: string): string {
+    const titleMatch = content.match(/^---[\s\S]*?\ntitle:\s*["']?(.*?)["']?\n[\s\S]*?---/);
+    if (titleMatch) {
+        // Remove any remaining quotes and trim whitespace
+        return titleMatch[1].replace(/['"]/g, '').trim();
+    }
+    // Remove file extension and convert to title case
+    return path.basename(fileName, path.extname(fileName))
+        .split(/[-_]/)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+}
+
 // Find all markdown files in a directory
 async function findMarkdownFiles(dir: string): Promise<{ included: string[], excluded: string[] }> {
     const files = await fs.readdir(dir, { withFileTypes: true });
@@ -56,6 +70,8 @@ async function findMarkdownFiles(dir: string): Promise<{ included: string[], exc
 async function processFile(filePath: string, textSplitter: RecursiveCharacterTextSplitter, embeddings: OpenAIEmbeddings | null) {
     const content = await fs.readFile(filePath, 'utf-8');
     const relativePath = path.relative(process.cwd(), filePath);
+    const fileName = path.basename(filePath);
+    const title = extractTitle(content, fileName);
 
     const doc = new Document({ pageContent: content });
     const chunks = await textSplitter.splitDocuments([doc]);
@@ -65,10 +81,11 @@ async function processFile(filePath: string, textSplitter: RecursiveCharacterTex
         const base = {
             id: generateId(chunk.pageContent),
             metadata: {
-                fileName: path.basename(filePath),
+                fileName,
                 filePath: relativePath,
                 fileType: path.extname(filePath).substring(1),
-                timestamp: new Date().getTime()
+                timestamp: new Date().getTime(),
+                title
             }
         };
 
@@ -150,7 +167,6 @@ export default async function handler(req: Request, res: Response) {
             processedFiles: markdownFiles.length,
             excludedFiles: excludedFiles.length,
             totalChunks: allChunks.length,
-            excludedFilePaths: excludedFiles.map(f => path.relative(process.cwd(), f))
         });
     } catch (error) {
         console.error('Error:', error);

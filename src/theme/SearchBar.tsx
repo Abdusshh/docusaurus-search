@@ -170,32 +170,39 @@ const SearchBarContent = (): JSX.Element => {
                     className={styles.searchInput}
                     autoFocus
                   />
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      className={styles.clearButton}
-                      onClick={() => setSearchQuery('')}
-                      aria-label="Clear search"
-                    >
-                      <svg 
-                        viewBox="0 0 24 24" 
-                        className={styles.clearIcon}
-                        fill="none" 
-                        stroke="currentColor" 
-                        strokeWidth="2"
-                        strokeLinecap="round" 
-                        strokeLinejoin="round"
+                  <div className={styles.inputActions}>
+                    {searchQuery && (
+                      <button
+                        type="button"
+                        className={styles.clearButton}
+                        onClick={() => setSearchQuery('')}
+                        aria-label="Clear search"
                       >
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
+                        <svg 
+                          viewBox="0 0 24 24" 
+                          className={styles.clearIcon}
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2"
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    )}
+                    <div className={styles.divider}></div>
+                    <button 
+                      className={styles.closeButton}
+                      onClick={() => setIsModalOpen(false)}
+                      aria-label="Close search"
+                    >
+                      <span className={styles.escKey}>ESC</span>
                     </button>
-                  )}
+                  </div>
                 </div>
               </form>
-            </div>
-
-            <div ref={searchResultsRef} className={styles.searchResults}>
               <div className={styles.poweredBy}>
                 <span>Powered by</span>
                 <img 
@@ -204,6 +211,9 @@ const SearchBarContent = (): JSX.Element => {
                   className={styles.searchLogo}
                 />
               </div>
+            </div>
+
+            <div ref={searchResultsRef} className={styles.searchResults}>
               {isLoading ? (
                 <div className={styles.loadingSpinner}>Loading...</div>
               ) : error ? (

@@ -7,7 +7,7 @@ require('dotenv').config()
 
 const config: Config = {
   title: 'Upstash Docs2Search',
-  // tagline: '',
+  tagline: 'Lightning-fast doc search made simple!',
   favicon: 'img/favicon.ico',
 
   customFields: {

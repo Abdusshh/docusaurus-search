@@ -119,7 +119,7 @@ const SearchBarContent = (): JSX.Element => {
 
   // Handle result click
   const handleResultClick = (result: SearchResult) => {
-    const docsPath = result.metadata.filePath.replace(/^temp_repo/, '');
+    const docsPath = result.metadata.filePath.replace(/^docs/, '/docs');
     const cleanPath = docsPath.replace(/\.mdx?$/, '');
     history.push(cleanPath);
     setIsModalOpen(false);
@@ -221,10 +221,10 @@ const SearchBarContent = (): JSX.Element => {
                       {result.metadata.title || result.metadata.fileName.replace(/\.mdx?$/, '')}
                     </div>
                     <div className={styles.resultPath}>
-                      {result.metadata.filePath.replace(/^temp_repo\//, '').replace(/\.mdx?$/, '')}
+                      {result.metadata.filePath.replace(/\.mdx?$/, '')}
                     </div>
                     <div className={styles.resultPreview}>
-                      {result.data}
+                      {(result.data.split('---\n')[2] || result.data).split(/\n/).find(line => /^[a-zA-Z]/.test(line)) || result.data.split('---\n')[2] || result.data}
                     </div>
                   </div>
                 ))

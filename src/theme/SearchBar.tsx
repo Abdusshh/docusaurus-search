@@ -14,6 +14,7 @@ interface SearchResult {
     filePath: string;
     fileType: string;
     timestamp: number;
+    title?: string;
   };
 }
 
@@ -30,15 +31,15 @@ const SearchBarContent = (): JSX.Element => {
   const { colorMode } = useColorMode();
 
   const DEFAULT_INDEX_NAMESPACE = "docusaurus-search-upstash";
-  const INDEX_NAMESPACE = `${siteConfig.customFields.UPSTASH_VECTOR_INDEX_NAMESPACE}` || DEFAULT_INDEX_NAMESPACE;
+  const INDEX_NAMESPACE = (siteConfig.customFields?.UPSTASH_VECTOR_INDEX_NAMESPACE as string) || DEFAULT_INDEX_NAMESPACE;
 
   // Initialize Upstash Vector client
   const index = new Index({
-    url: `${siteConfig.customFields.UPSTASH_VECTOR_REST_URL}`,
-    token: `${siteConfig.customFields.UPSTASH_VECTOR_REST_TOKEN}`,
+    url: (siteConfig.customFields?.UPSTASH_VECTOR_REST_URL as string),
+    token: (siteConfig.customFields?.UPSTASH_VECTOR_REST_TOKEN as string),
   });
 
-  if (!siteConfig.customFields.UPSTASH_VECTOR_REST_URL || !siteConfig.customFields.UPSTASH_VECTOR_REST_TOKEN) {
+  if (!siteConfig.customFields?.UPSTASH_VECTOR_REST_URL || !siteConfig.customFields?.UPSTASH_VECTOR_REST_TOKEN) {
     throw new Error('UPSTASH_VECTOR_REST_URL and UPSTASH_VECTOR_REST_TOKEN are required');
   }
 
@@ -70,6 +71,7 @@ const SearchBarContent = (): JSX.Element => {
             filePath: result.metadata.filePath as string,
             fileType: result.metadata.fileType as string,
             timestamp: result.metadata.timestamp as number,
+            title: result.metadata.title as string,
           },
         }));
         
@@ -171,10 +173,10 @@ const SearchBarContent = (): JSX.Element => {
                 onClick={() => handleResultClick(result)}
               >
                 <div className={styles.resultTitle}>
-                  {result.metadata.fileName.replace('.mdx', '')}
+                  {result.metadata.title || result.metadata.fileName.replace(/\.mdx?$/, '')}
                 </div>
                 <div className={styles.resultPath}>
-                  {result.metadata.filePath.replace(/^temp_repo\//, '').replace('.mdx', '')}
+                  {result.metadata.filePath.replace(/^temp_repo\//, '').replace(/\.mdx?$/, '')}
                 </div>
                 <div className={styles.resultPreview}>
                   {result.data}

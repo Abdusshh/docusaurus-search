@@ -8,7 +8,11 @@ import crypto from 'crypto';
 import type { Request, Response } from 'express';
 
 // Get minimum file length from env or default to 10
-const MIN_FILE_LENGTH = parseInt(process.env.MIN_FILE_LENGTH || '10', 10);
+const DEFAULT_MIN_FILE_LENGTH = 10;
+const DEFAULT_INDEX_NAMESPACE = 'docusaurus-search-upstash';
+
+const MIN_FILE_LENGTH = parseInt(process.env.MIN_FILE_LENGTH || String(DEFAULT_MIN_FILE_LENGTH), 10);
+const INDEX_NAMESPACE = process.env.UPSTASH_VECTOR_INDEX_NAMESPACE || DEFAULT_INDEX_NAMESPACE;
 
 // Generate a unique ID for content chunks
 function generateId(content: string): string {
@@ -87,6 +91,7 @@ export default async function handler(req: Request, res: Response) {
     }
 
     try {
+        console.time('Total processing time');
         // Initialize Upstash Vector
         const index = new Index({
             url: process.env.UPSTASH_VECTOR_REST_URL!,
@@ -131,13 +136,15 @@ export default async function handler(req: Request, res: Response) {
 
         // Store embeddings in Upstash Vector
         console.log(`Storing ${allChunks.length} chunks in Upstash Vector`);
-        const batchSize = 100;
+        const batchSize = 100; 
+        await index.reset({ namespace: INDEX_NAMESPACE });
         for (let i = 0; i < allChunks.length; i += batchSize) {
             const batch = allChunks.slice(i, i + batchSize);
-            await index.upsert(batch, { namespace: 'upstash-docs' });
+            await index.upsert(batch, { namespace: INDEX_NAMESPACE });
             console.log(`Processed batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(allChunks.length / batchSize)}`);
         }
 
+        console.timeEnd('Total processing time');
         res.status(200).json({
             success: true,
             processedFiles: markdownFiles.length,

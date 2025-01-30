@@ -13,6 +13,7 @@ const config: Config = {
   customFields: {
     UPSTASH_VECTOR_REST_URL: process.env.UPSTASH_VECTOR_REST_URL,
     UPSTASH_VECTOR_REST_TOKEN: process.env.UPSTASH_VECTOR_REST_TOKEN,
+    UPSTASH_VECTOR_INDEX_NAMESPACE: process.env.UPSTASH_VECTOR_INDEX_NAMESPACE
   },
 
   // Set the production url of your site here

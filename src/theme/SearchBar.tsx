@@ -29,11 +29,19 @@ const SearchBarContent = (): JSX.Element => {
   const {siteConfig} = useDocusaurusContext();
   const { colorMode } = useColorMode();
 
+  const DEFAULT_INDEX_NAMESPACE = "docusaurus-search-upstash";
+
+  const namespace = `${siteConfig.customFields.UPSTASH_VECTOR_INDEX_NAMESPACE}` || DEFAULT_INDEX_NAMESPACE;
+
   // Initialize Upstash Vector client
   const index = new Index({
     url: `${siteConfig.customFields.UPSTASH_VECTOR_REST_URL}`,
     token: `${siteConfig.customFields.UPSTASH_VECTOR_REST_TOKEN}`,
   });
+
+  if (!siteConfig.customFields.UPSTASH_VECTOR_REST_URL || !siteConfig.customFields.UPSTASH_VECTOR_REST_TOKEN) {
+    throw new Error('UPSTASH_VECTOR_REST_URL and UPSTASH_VECTOR_REST_TOKEN are required');
+  }
 
   // Handle search input changes with debounce
   const handleSearchInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +59,7 @@ const SearchBarContent = (): JSX.Element => {
           includeData: true,
           includeMetadata: true,
         }, {
-          namespace: "docusaurus-search" // Replace with your namespace
+          namespace: namespace
         });
         
         // Map the query results to match SearchResult type

@@ -19,7 +19,7 @@ async function scheduleIndexing() {
     try {
         // Schedule the job to run every day at midnight UTC
         const scheduleResponse = await c.schedules.create({
-            destination: `${process.env.DOCS_DEPLOYMENT_URL}/api/indexDocs`,
+            destination: `${process.env.DOCS_DEPLOYMENT_URL}/api/index-docs`,
             cron: "0 0 * * *" // Every day at midnight UTC
         });
 

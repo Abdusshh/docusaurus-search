@@ -24,6 +24,9 @@ const SearchBarContent = (): JSX.Element => {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchResultsRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -43,6 +46,11 @@ const SearchBarContent = (): JSX.Element => {
   if (!siteConfig.customFields?.UPSTASH_VECTOR_REST_URL || !siteConfig.customFields?.UPSTASH_VECTOR_REST_TOKEN) {
     throw new Error('UPSTASH_VECTOR_REST_URL and UPSTASH_VECTOR_REST_TOKEN are required');
   }
+
+  // Clear AI response when search query changes
+  useEffect(() => {
+    setAiResponse(null);
+  }, [searchQuery]);
 
   // Handle keyboard shortcuts
   useEffect(() => {
@@ -118,6 +126,39 @@ const SearchBarContent = (): JSX.Element => {
     }
   };
 
+  const handleAiQuestion = async (question: string) => {
+    setIsAiLoading(true);
+    setAiResponse(null);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/ask-ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: question,
+          context: searchResults.map(result => ({
+            content: result.data,
+            metadata: result.metadata
+          }))
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
+
+      const data = await response.json();
+      setAiResponse(data.response);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get AI response');
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
   // Handle result click
   const handleResultClick = (result: SearchResult) => {
     const docsPath = '/' + result.metadata.filePath;
@@ -125,6 +166,11 @@ const SearchBarContent = (): JSX.Element => {
     history.push(cleanPath);
     setIsModalOpen(false);
     setSearchQuery('');
+  };
+
+  const handleClearClick = () => {
+    setSearchQuery('');
+    setSearchResults([]);
   };
 
   return (
@@ -176,7 +222,7 @@ const SearchBarContent = (): JSX.Element => {
                       <button
                         type="button"
                         className={styles.clearButton}
-                        onClick={() => setSearchQuery('')}
+                        onClick={handleClearClick}
                         aria-label="Clear search"
                       >
                         <svg 
@@ -212,23 +258,48 @@ const SearchBarContent = (): JSX.Element => {
               ) : error ? (
                 <div className={styles.error}>{error}</div>
               ) : searchResults.length > 0 ? (
-                searchResults.map((result) => (
-                  <div
-                    key={result.id}
-                    className={styles.searchResultItem}
-                    onClick={() => handleResultClick(result)}
+                <>
+                  <div 
+                    className={styles.aiSection}
+                    onClick={() => !isAiLoading && handleAiQuestion(searchQuery)}
                   >
-                    <div className={styles.resultTitle}>
-                      {result.metadata.title || result.metadata.fileName.replace(/\.mdx?$/, '')}
+                    <div className={styles.aiQueryWrapper}>
+                      <div className={styles.aiQueryInfo}>
+                        <span className={styles.aiLabel}>AI</span>
+                        <div className={styles.aiQueryTextWrapper}>
+                          <span className={styles.aiQueryText}>
+                            Tell me about <span className={styles.aiQueryHighlight}>{searchQuery}</span>
+                          </span>
+                        </div>
+                      </div>
+                      <span className={styles.aiStatus}>
+                        {isAiLoading ? 'Thinking...' : 'Ask →'}
+                      </span>
                     </div>
-                    <div className={styles.resultPath}>
-                      {result.metadata.filePath.replace(/\.mdx?$/, '')}
-                    </div>
-                    <div className={styles.resultPreview}>
-                      {(result.data.split('---\n')[2] || result.data).split(/\n/).find(line => /^[a-zA-Z]/.test(line)) || result.data.split('---\n')[2] || result.data}
-                    </div>
+                    {aiResponse && (
+                      <div className={styles.aiResponse}>
+                        {aiResponse}
+                      </div>
+                    )}
                   </div>
-                ))
+                  {searchResults.map((result) => (
+                    <div
+                      key={result.id}
+                      className={styles.searchResultItem}
+                      onClick={() => handleResultClick(result)}
+                    >
+                      <div className={styles.resultTitle}>
+                        {result.metadata.title || result.metadata.fileName.replace(/\.mdx?$/, '')}
+                      </div>
+                      <div className={styles.resultPath}>
+                        {result.metadata.filePath.replace(/\.mdx?$/, '')}
+                      </div>
+                      <div className={styles.resultPreview}>
+                        {(result.data.split('---\n')[2] || result.data).split(/\n/).find(line => /^[a-zA-Z]/.test(line)) || result.data.split('---\n')[2] || result.data}
+                      </div>
+                    </div>
+                  ))}
+                </>
               ) : searchQuery ? (
                 <div className={styles.noResults}>No results found</div>
               ) : (

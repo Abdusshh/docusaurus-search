@@ -284,6 +284,78 @@
   color: var(--ifm-color-emphasis-600);
 }
 
+.aiSection {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.aiSection:hover {
+  background-color: var(--ifm-color-emphasis-100);
+  border-color: var(--ifm-color-primary-lighter);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.aiQueryWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.aiQueryInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.aiLabel {
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-100);
+  background: var(--ifm-color-primary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.aiQueryTextWrapper {
+  display: flex;
+  flex-direction: column;
+  padding-left: 2px;
+}
+
+.aiQueryText {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.aiQueryHighlight {
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+}
+
+.aiStatus {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.aiResponse {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--ifm-color-emphasis-100);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ifm-color-emphasis-800);
+}
+
 @media (max-width: 768px) {
   .modalContent {
     margin: 0 16px;

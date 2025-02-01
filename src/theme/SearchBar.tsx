@@ -273,8 +273,8 @@ const SearchBarContent = (): JSX.Element => {
                 <>
                   {ENABLE_AI && (
                     <div 
-                      className={styles.aiSection}
-                      onClick={() => !isAiLoading && handleAiQuestion(searchQuery)}
+                      className={`${styles.aiSection} ${aiResponse ? styles.aiSectionResponded : ''}`}
+                      onClick={() => !isAiLoading && !aiResponse && handleAiQuestion(searchQuery)}
                     >
                       <div className={styles.aiQueryWrapper}>
                         <div className={styles.aiQueryInfo}>
@@ -286,12 +286,14 @@ const SearchBarContent = (): JSX.Element => {
                           </div>
                         </div>
                         <span className={styles.aiStatus}>
-                          {isAiLoading ? <LoadingDots /> : 'Ask →'}
+                          {isAiLoading ? <LoadingDots /> : (aiResponse ? 'Response →' : 'Ask →')}
                         </span>
                       </div>
                       {aiResponse && (
-                        <div className={styles.aiResponse}>
-                          {aiResponse}
+                        <div className={styles.aiResponseWrapper}>
+                          <div className={styles.aiResponse}>
+                            {aiResponse}
+                          </div>
                         </div>
                       )}
                     </div>

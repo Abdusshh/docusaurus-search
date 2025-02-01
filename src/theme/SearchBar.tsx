@@ -18,6 +18,15 @@ interface SearchResult {
   };
 }
 
+const LoadingDots = ({ text = "Thinking" }: { text?: string }) => (
+  <span className={styles.loadingDots}>
+    {text}
+    <span className={styles.dots}>
+      <span>.</span><span>.</span><span>.</span>
+    </span>
+  </span>
+);
+
 const SearchBarContent = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -254,7 +263,9 @@ const SearchBarContent = (): JSX.Element => {
 
             <div ref={searchResultsRef} className={styles.searchResults}>
               {isLoading ? (
-                <div className={styles.loadingSpinner}>Loading...</div>
+                <div className={styles.loadingText}>
+                  <LoadingDots text="Loading" />
+                </div>
               ) : error ? (
                 <div className={styles.error}>{error}</div>
               ) : searchResults.length > 0 ? (
@@ -273,7 +284,7 @@ const SearchBarContent = (): JSX.Element => {
                         </div>
                       </div>
                       <span className={styles.aiStatus}>
-                        {isAiLoading ? 'Thinking...' : 'Ask →'}
+                        {isAiLoading ? <LoadingDots /> : 'Ask →'}
                       </span>
                     </div>
                     {aiResponse && (

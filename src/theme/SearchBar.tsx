@@ -45,6 +45,7 @@ const SearchBarContent = (): JSX.Element => {
 
   const DEFAULT_INDEX_NAMESPACE = "docusaurus-search-upstash";
   const INDEX_NAMESPACE = (siteConfig.customFields?.UPSTASH_VECTOR_INDEX_NAMESPACE as string) || DEFAULT_INDEX_NAMESPACE;
+  const ENABLE_AI = siteConfig.customFields?.ENABLE_AI_SEARCH as boolean;
 
   // Initialize Upstash Vector client
   const index = new Index({
@@ -270,29 +271,31 @@ const SearchBarContent = (): JSX.Element => {
                 <div className={styles.error}>{error}</div>
               ) : searchResults.length > 0 ? (
                 <>
-                  <div 
-                    className={styles.aiSection}
-                    onClick={() => !isAiLoading && handleAiQuestion(searchQuery)}
-                  >
-                    <div className={styles.aiQueryWrapper}>
-                      <div className={styles.aiQueryInfo}>
-                        <span className={styles.aiLabel}>AI</span>
-                        <div className={styles.aiQueryTextWrapper}>
-                          <span className={styles.aiQueryText}>
-                            Tell me about <span className={styles.aiQueryHighlight}>{searchQuery}</span>
-                          </span>
+                  {ENABLE_AI && (
+                    <div 
+                      className={styles.aiSection}
+                      onClick={() => !isAiLoading && handleAiQuestion(searchQuery)}
+                    >
+                      <div className={styles.aiQueryWrapper}>
+                        <div className={styles.aiQueryInfo}>
+                          <span className={styles.aiLabel}>AI</span>
+                          <div className={styles.aiQueryTextWrapper}>
+                            <span className={styles.aiQueryText}>
+                              Tell me about <span className={styles.aiQueryHighlight}>{searchQuery}</span>
+                            </span>
+                          </div>
                         </div>
+                        <span className={styles.aiStatus}>
+                          {isAiLoading ? <LoadingDots /> : 'Ask →'}
+                        </span>
                       </div>
-                      <span className={styles.aiStatus}>
-                        {isAiLoading ? <LoadingDots /> : 'Ask →'}
-                      </span>
+                      {aiResponse && (
+                        <div className={styles.aiResponse}>
+                          {aiResponse}
+                        </div>
+                      )}
                     </div>
-                    {aiResponse && (
-                      <div className={styles.aiResponse}>
-                        {aiResponse}
-                      </div>
-                    )}
-                  </div>
+                  )}
                   {searchResults.map((result) => (
                     <div
                       key={result.id}

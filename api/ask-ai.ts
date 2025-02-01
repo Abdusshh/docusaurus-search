@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     const prompt = `Based on the following documentation context, please answer the question provided.Ensure your response is clear, concise, and directly related to the information presented in the context.Provide any necessary explanations or definitions for complex terms used in the context, and ensure that your answer is well-structured. Question: "${question}"\n\nContext:\n${contextText}`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",

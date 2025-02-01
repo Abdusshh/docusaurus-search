@@ -404,6 +404,24 @@
   color: var(--ifm-color-emphasis-800);
 }
 
+.aiResponse span {
+  display: inline-block;
+}
+
+.typing {
+  border-right: 2px solid transparent;
+  animation: blinkCursor 0.8s step-end infinite;
+}
+
+@keyframes blinkCursor {
+  from, to {
+    border-right-color: transparent;
+  }
+  50% {
+    border-right-color: var(--ifm-color-emphasis-600);
+  }
+}
+
 @keyframes slideIn {
   from {
     opacity: 0;

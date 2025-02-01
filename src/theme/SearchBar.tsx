@@ -18,6 +18,26 @@ interface SearchResult {
   };
 }
 
+const TypewriterText = ({ text }: { text: string }) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timer = setTimeout(() => {
+        setDisplayedText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, 8);
+      return () => clearTimeout(timer);
+    } else {
+      setIsTyping(false);
+    }
+  }, [text, currentIndex]);
+
+  return <span className={isTyping ? styles.typing : ''}>{displayedText}</span>;
+};
+
 const LoadingDots = ({ text = "Thinking" }: { text?: string }) => (
   <span className={styles.loadingDots}>
     {text}
@@ -292,7 +312,7 @@ const SearchBarContent = (): JSX.Element => {
                       {aiResponse && (
                         <div className={styles.aiResponseWrapper}>
                           <div className={styles.aiResponse}>
-                            {aiResponse}
+                            <TypewriterText text={aiResponse} />
                           </div>
                         </div>
                       )}

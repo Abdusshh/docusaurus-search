@@ -18,12 +18,44 @@ interface SearchResult {
   };
 }
 
+const TypewriterText = ({ text }: { text: string }) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timer = setTimeout(() => {
+        setDisplayedText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, 8);
+      return () => clearTimeout(timer);
+    } else {
+      setIsTyping(false);
+    }
+  }, [text, currentIndex]);
+
+  return <span className={isTyping ? styles.typing : ''}>{displayedText}</span>;
+};
+
+const LoadingDots = ({ text = "Thinking" }: { text?: string }) => (
+  <span className={styles.loadingDots}>
+    {text}
+    <span className={styles.dots}>
+      <span>.</span><span>.</span><span>.</span>
+    </span>
+  </span>
+);
+
 const SearchBarContent = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchResultsRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -33,6 +65,7 @@ const SearchBarContent = (): JSX.Element => {
 
   const DEFAULT_INDEX_NAMESPACE = "docusaurus-search-upstash";
   const INDEX_NAMESPACE = (siteConfig.customFields?.UPSTASH_VECTOR_INDEX_NAMESPACE as string) || DEFAULT_INDEX_NAMESPACE;
+  const ENABLE_AI = siteConfig.customFields?.ENABLE_AI_SEARCH as boolean;
 
   // Initialize Upstash Vector client
   const index = new Index({
@@ -43,6 +76,11 @@ const SearchBarContent = (): JSX.Element => {
   if (!siteConfig.customFields?.UPSTASH_VECTOR_REST_URL || !siteConfig.customFields?.UPSTASH_VECTOR_REST_TOKEN) {
     throw new Error('UPSTASH_VECTOR_REST_URL and UPSTASH_VECTOR_REST_TOKEN are required');
   }
+
+  // Clear AI response when search query changes
+  useEffect(() => {
+    setAiResponse(null);
+  }, [searchQuery]);
 
   // Handle keyboard shortcuts
   useEffect(() => {
@@ -118,6 +156,39 @@ const SearchBarContent = (): JSX.Element => {
     }
   };
 
+  const handleAiQuestion = async (question: string) => {
+    setIsAiLoading(true);
+    setAiResponse(null);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/ask-ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: question,
+          context: searchResults.map(result => ({
+            content: result.data,
+            metadata: result.metadata
+          }))
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
+
+      const data = await response.json();
+      setAiResponse(data.response);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get AI response');
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
   // Handle result click
   const handleResultClick = (result: SearchResult) => {
     const docsPath = '/' + result.metadata.filePath;
@@ -125,6 +196,11 @@ const SearchBarContent = (): JSX.Element => {
     history.push(cleanPath);
     setIsModalOpen(false);
     setSearchQuery('');
+  };
+
+  const handleClearClick = () => {
+    setSearchQuery('');
+    setSearchResults([]);
   };
 
   return (
@@ -176,7 +252,7 @@ const SearchBarContent = (): JSX.Element => {
                       <button
                         type="button"
                         className={styles.clearButton}
-                        onClick={() => setSearchQuery('')}
+                        onClick={handleClearClick}
                         aria-label="Clear search"
                       >
                         <svg 
@@ -208,27 +284,58 @@ const SearchBarContent = (): JSX.Element => {
 
             <div ref={searchResultsRef} className={styles.searchResults}>
               {isLoading ? (
-                <div className={styles.loadingSpinner}>Loading...</div>
+                <div className={styles.loadingText}>
+                  <LoadingDots text="Loading" />
+                </div>
               ) : error ? (
                 <div className={styles.error}>{error}</div>
               ) : searchResults.length > 0 ? (
-                searchResults.map((result) => (
-                  <div
-                    key={result.id}
-                    className={styles.searchResultItem}
-                    onClick={() => handleResultClick(result)}
-                  >
-                    <div className={styles.resultTitle}>
-                      {result.metadata.title || result.metadata.fileName.replace(/\.mdx?$/, '')}
+                <>
+                  {ENABLE_AI && (
+                    <div 
+                      className={`${styles.aiSection} ${aiResponse ? styles.aiSectionResponded : ''}`}
+                      onClick={() => !isAiLoading && !aiResponse && handleAiQuestion(searchQuery)}
+                    >
+                      <div className={styles.aiQueryWrapper}>
+                        <div className={styles.aiQueryInfo}>
+                          <span className={styles.aiLabel}>AI</span>
+                          <div className={styles.aiQueryTextWrapper}>
+                            <span className={styles.aiQueryText}>
+                              Tell me about <span className={styles.aiQueryHighlight}>{searchQuery}</span>
+                            </span>
+                          </div>
+                        </div>
+                        <span className={styles.aiStatus}>
+                          {isAiLoading ? <LoadingDots /> : (aiResponse ? 'Response →' : 'Ask →')}
+                        </span>
+                      </div>
+                      {aiResponse && (
+                        <div className={styles.aiResponseWrapper}>
+                          <div className={styles.aiResponse}>
+                            <TypewriterText text={aiResponse} />
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className={styles.resultPath}>
-                      {result.metadata.filePath.replace(/\.mdx?$/, '')}
+                  )}
+                  {searchResults.map((result) => (
+                    <div
+                      key={result.id}
+                      className={styles.searchResultItem}
+                      onClick={() => handleResultClick(result)}
+                    >
+                      <div className={styles.resultTitle}>
+                        {result.metadata.title || result.metadata.fileName.replace(/\.mdx?$/, '')}
+                      </div>
+                      <div className={styles.resultPath}>
+                        {result.metadata.filePath.replace(/\.mdx?$/, '')}
+                      </div>
+                      <div className={styles.resultPreview}>
+                        {(result.data.split('---\n')[2] || result.data).split(/\n/).find(line => /^[a-zA-Z]/.test(line)) || result.data.split('---\n')[2] || result.data}
+                      </div>
                     </div>
-                    <div className={styles.resultPreview}>
-                      {(result.data.split('---\n')[2] || result.data).split(/\n/).find(line => /^[a-zA-Z]/.test(line)) || result.data.split('---\n')[2] || result.data}
-                    </div>
-                  </div>
-                ))
+                  ))}
+                </>
               ) : searchQuery ? (
                 <div className={styles.noResults}>No results found</div>
               ) : (

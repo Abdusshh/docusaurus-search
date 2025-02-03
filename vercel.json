@@ -1,8 +1,0 @@
-{
-    "crons": [
-      {
-        "path": "/api/indexDocs",
-        "schedule": "0 0 * * *"
-      }
-    ]
-  }
